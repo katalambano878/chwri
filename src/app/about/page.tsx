@@ -62,32 +62,25 @@ const TEAM_PLACEHOLDERS = [
     bio: "Public health leader with over a decade of experience in implementation research, health systems strengthening, nutrition, MEL, and social and behaviour change communication. He leads CHWRI's evidence-driven strategy and currently pursues a PhD in Public Health with a focus on non-communicable diseases.",
   },
   {
+    role: "Board Director",
+    unit: "Vice Chancellor, University of Health and Allied Sciences (UHAS)",
+    name: "Prof. Lydia Aziato",
+    image: "/images/team/lydia-aziato.png",
+    bio: "Distinguished nurse leader, oncology expert, and academic with a PhD in Nursing. Vice Chancellor of UHAS and author of over 90 peer-reviewed publications, she provides strategic leadership and academic guidance across CHWRI's research, capacity building, and cancer prevention initiatives.",
+  },
+  {
+    role: "Board Director",
+    unit: "Chief Health Research Officer, Navrongo Health Research Centre (Ghana Health Service)",
+    name: "Dr. Raymond Akawire Aborigo",
+    image: "/images/team/raymond-aborigo.png",
+    bio: "Global public health researcher (PhD, Monash University) with over two decades of experience across health systems research, maternal and newborn health, non-communicable diseases, mental health, and bioethics. Author of 80+ peer-reviewed publications, he has consulted for WHO, UNICEF, USAID, and CDC, strengthening evidence-informed policy and research capacity.",
+  },
+  {
     role: "Head, Internal Audit Department",
     unit: "Nursing and Midwifery Training College, Nalerigu (Ministry of Health, Ghana)",
     name: "Jamal Mohammed Abubakari",
     image: "/images/team/jamal-mohammed-abubakari.png",
     bio: "Public sector Internal Auditor and governance professional with extensive experience in risk management, internal controls, and regulatory compliance. Jamal holds an MBA in Auditing (UPSA), is a member of the Institute of Internal Auditors Ghana, and contributes to both institutional accountability and community leadership.",
-  },
-  {
-    role: "Profile Forthcoming",
-    unit: "Core Leadership",
-    name: "Name forthcoming",
-    image: "/images/team-placeholder.jpg",
-    bio: "Official profile details and photograph will be published after final internal validation.",
-  },
-  {
-    role: "Profile Forthcoming",
-    unit: "Core Leadership",
-    name: "Name forthcoming",
-    image: "/images/team-placeholder.jpg",
-    bio: "Official profile details and photograph will be published after final internal validation.",
-  },
-  {
-    role: "Profile Forthcoming",
-    unit: "Core Leadership",
-    name: "Name forthcoming",
-    image: "/images/team-placeholder.jpg",
-    bio: "Official profile details and photograph will be published after final internal validation.",
   },
 ] as const;
 
@@ -402,7 +395,7 @@ export default function AboutPage() {
 
           <StaggerChildren className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {TEAM_PLACEHOLDERS.map((member) => (
-              <motion.div key={member.role} variants={fadeInUp}>
+              <motion.div key={member.name} variants={fadeInUp}>
                 <div className="group relative rounded-2xl bg-white border border-slate-100 shadow-sm h-full overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-teal-200/80">
                   <div className="aspect-[4/5] relative overflow-hidden bg-slate-100">
                     <Image

@@ -33,6 +33,17 @@ export function Navbar() {
     setOpenDropdown(null);
   }, [pathname]);
 
+  useEffect(() => {
+    if (!isMobileOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileOpen]);
+
   return (
     <>
       {/* Top bar */}
@@ -181,55 +192,83 @@ export function Navbar() {
           </div>
         </nav>
 
-        {/* Mobile menu */}
+        {/* Mobile menu drawer */}
         <AnimatePresence>
           {isMobileOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="lg:hidden border-t border-teal-100/50 bg-white overflow-hidden"
-            >
-              <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
-                {NAV_LINKS.map((link) => {
-                  const hasChildren = "children" in link && link.children;
+            <>
+              <motion.button
+                type="button"
+                aria-label="Close mobile menu backdrop"
+                onClick={() => setIsMobileOpen(false)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="lg:hidden fixed inset-0 z-40 bg-slate-950/45 backdrop-blur-[1px]"
+              />
 
-                  return (
-                    <div key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="block px-4 py-3 text-base font-medium text-slate-700 hover:text-teal-700 hover:bg-teal-50 rounded-lg transition-colors"
-                      >
-                        {link.label}
-                      </Link>
-                      {hasChildren && (
-                        <div className="ml-4 space-y-0.5">
-                          {link.children.map((child) => (
-                            <Link
-                              key={child.label}
-                              href={child.href}
-                              className="block px-4 py-2 text-sm text-slate-500 hover:text-teal-700 hover:bg-teal-50/50 rounded-lg transition-colors"
-                            >
-                              {child.label}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-                <div className="pt-3 px-4">
-                  <Link
-                    href="/get-involved"
-                    className="flex items-center justify-center gap-2 w-full px-5 py-3 bg-teal-700 text-white font-semibold rounded-full shadow-md"
+              <motion.aside
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="lg:hidden fixed right-0 top-0 z-50 h-dvh w-[88vw] max-w-sm bg-white border-l border-teal-100 shadow-2xl"
+                aria-label="Mobile navigation menu"
+              >
+                <div className="flex items-center justify-between px-5 py-4 border-b border-teal-100/70">
+                  <p className="text-sm font-semibold text-slate-700">Menu</p>
+                  <button
+                    onClick={() => setIsMobileOpen(false)}
+                    className="p-2 rounded-lg text-slate-600 hover:bg-teal-50 transition-colors"
+                    aria-label="Close menu"
                   >
-                    Get Involved
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
+                    <X className="w-6 h-6" />
+                  </button>
                 </div>
-              </div>
-            </motion.div>
+
+                <div className="h-[calc(100dvh-73px)] overflow-y-auto px-4 py-4">
+                  <div className="space-y-1">
+                    {NAV_LINKS.map((link) => {
+                      const hasChildren = "children" in link && link.children;
+
+                      return (
+                        <div key={link.label}>
+                          <Link
+                            href={link.href}
+                            className="block rounded-xl px-4 py-3.5 text-base font-medium text-slate-700 hover:text-teal-700 hover:bg-teal-50 transition-colors"
+                          >
+                            {link.label}
+                          </Link>
+                          {hasChildren && (
+                            <div className="ml-3 mt-0.5 mb-1 space-y-0.5 border-l border-teal-100 pl-3">
+                              {link.children.map((child) => (
+                                <Link
+                                  key={child.label}
+                                  href={child.href}
+                                  className="block rounded-lg px-3 py-2.5 text-sm text-slate-600 hover:text-teal-700 hover:bg-teal-50/60 transition-colors"
+                                >
+                                  {child.label}
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="pt-4 pb-6">
+                    <Link
+                      href="/get-involved"
+                      className="flex items-center justify-center gap-2 w-full px-5 py-3.5 bg-teal-700 text-white font-semibold rounded-full shadow-md hover:bg-teal-800 transition-colors"
+                    >
+                      Get Involved
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
+              </motion.aside>
+            </>
           )}
         </AnimatePresence>
       </header>
