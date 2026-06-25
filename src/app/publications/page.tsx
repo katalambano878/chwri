@@ -8,7 +8,11 @@ import {
   FileText,
   Filter,
   FolderOpen,
+  Landmark,
+  Lock,
+  ScrollText,
   Search,
+  ShieldCheck,
 } from "lucide-react";
 import {
   AnimateOnScroll,
@@ -120,6 +124,45 @@ const publications: {
     type: "Research Paper",
     date: "2022",
     href: "/publications",
+  },
+];
+
+type GovernanceDoc = {
+  title: string;
+  description: string;
+  icon: typeof FileText;
+  label: string;
+  file: string;
+  available: boolean;
+};
+
+const governanceDocuments: GovernanceDoc[] = [
+  {
+    title: "CHWRI Constitution",
+    description:
+      "The founding constitution setting out the Centre's legal identity, governance structure, membership, and operating principles.",
+    icon: ScrollText,
+    label: "PDF · Constitution",
+    file: "/documents/chwri-constitution.pdf",
+    available: false,
+  },
+  {
+    title: "Governance & Board Charter",
+    description:
+      "Roles, responsibilities, and decision-making framework for the Board of Directors and management of CHWRI.",
+    icon: Landmark,
+    label: "PDF · Governance charter",
+    file: "/documents/chwri-governance-charter.pdf",
+    available: false,
+  },
+  {
+    title: "Code of Conduct & Ethics Policy",
+    description:
+      "Standards of integrity, safeguarding, and ethical conduct that guide CHWRI staff, partners, and research activities.",
+    icon: ShieldCheck,
+    label: "PDF · Policy",
+    file: "/documents/chwri-code-of-conduct.pdf",
+    available: false,
   },
 ];
 
@@ -254,6 +297,71 @@ export default function PublicationsPage() {
               ))}
             </StaggerChildren>
           )}
+        </div>
+      </section>
+
+      <section className="bg-teal-900/[0.03] py-20 lg:py-28 border-y border-teal-100/60">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <SectionHeader
+            badge="Governance"
+            title="Governance & institutional documents"
+            subtitle="Official documents that define how CHWRI is constituted, governed, and held accountable. Click to view or download."
+          />
+          <StaggerChildren className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            {governanceDocuments.map((doc) => {
+              const Icon = doc.icon;
+
+              const cardInner = (
+                <>
+                  <div className="flex items-start justify-between mb-5">
+                    <div className="w-12 h-12 rounded-2xl bg-teal-50 flex items-center justify-center group-hover:bg-teal-100 transition-colors">
+                      <Icon className="w-6 h-6 text-teal-700" />
+                    </div>
+                    {!doc.available && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200/70 px-3 py-1 text-xs font-semibold font-heading">
+                        <Lock className="w-3 h-3" aria-hidden />
+                        Coming soon
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="font-heading text-lg font-semibold text-slate-900 group-hover:text-teal-700 transition-colors mb-2">
+                    {doc.title}
+                  </h3>
+                  <p className="text-slate-600 text-sm leading-relaxed flex-1 mb-6">
+                    {doc.description}
+                  </p>
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-2 text-sm font-semibold font-heading",
+                      doc.available ? "text-teal-700" : "text-slate-400"
+                    )}
+                  >
+                    <Download className="w-4 h-4" aria-hidden />
+                    {doc.available ? doc.label : "Available shortly"}
+                  </span>
+                </>
+              );
+
+              return (
+                <motion.div key={doc.title} variants={fadeInUp}>
+                  {doc.available ? (
+                    <a
+                      href={doc.file}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-col h-full group p-6 lg:p-8 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-teal-200 transition-all duration-300"
+                    >
+                      {cardInner}
+                    </a>
+                  ) : (
+                    <div className="flex flex-col h-full group p-6 lg:p-8 bg-white/70 rounded-2xl border border-dashed border-slate-200 shadow-sm cursor-default">
+                      {cardInner}
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
+          </StaggerChildren>
         </div>
       </section>
 

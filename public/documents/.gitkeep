@@ -1,0 +1,11 @@
+# Institutional & governance documents
+
+Place official downloadable files here (PDF, DOCX, etc.), for example:
+- chwri-constitution.pdf
+- chwri-governance-charter.pdf
+- chwri-code-of-conduct.pdf
+
+These are linked from the "Governance & Institutional Documents" section
+on /publications. Update the `governanceDocuments` array in
+src/app/publications/page.tsx so each entry's `file` path matches the
+filename you drop in this folder, and set `available: true`.
