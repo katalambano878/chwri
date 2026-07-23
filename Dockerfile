@@ -6,8 +6,12 @@ WORKDIR /app
 
 COPY package.json package-lock.json* ./
 # Install all deps (including Tailwind/PostCSS) for the production build.
+# Retries help when the Coolify host briefly loses registry connectivity.
 ENV NODE_ENV=development
-RUN npm ci
+RUN npm config set fetch-retries 5 \
+  && npm config set fetch-retry-mintimeout 20000 \
+  && npm config set fetch-retry-maxtimeout 120000 \
+  && npm ci --include=dev
 
 FROM base AS builder
 WORKDIR /app
