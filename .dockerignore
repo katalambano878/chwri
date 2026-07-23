@@ -1,0 +1,14 @@
+Dockerfile
+.dockerignore
+.git
+.gitignore
+.vercel
+.next
+node_modules
+npm-debug.log*
+README.md
+.env*
+!.env.example
+ChatGPT Image*
+*.md
+.DS_Store
