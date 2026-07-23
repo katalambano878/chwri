@@ -46,6 +46,7 @@ import { ArticleCard } from "@/components/shared/article-card";
 import { TestimonialCard } from "@/components/shared/testimonial-card";
 import { CTASection } from "@/components/shared/cta-section";
 import { THEMATIC_AREAS, IMPACT_STATS } from "@/lib/constants";
+import { PUBLICATIONS } from "@/lib/publications";
 
 const thematicIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   Heart,
@@ -750,24 +751,22 @@ export default function HomePage() {
                 </Link>
               </div>
               <StaggerChildren className="space-y-4">
-                <PublicationCard
-                  title="Community-Based Strategies for Improving Maternal Health Outcomes in Rural Northern Ghana"
-                  authors="CHWRI Research Team"
-                  type="Research Paper"
-                  date="2025"
-                />
-                <PublicationCard
-                  title="Strengthening Primary Healthcare: Lessons from Community Health Worker Programmes"
-                  authors="CHWRI Research Team"
-                  type="Policy Brief"
-                  date="2024"
-                />
-                <PublicationCard
-                  title="Mental Health Integration in Community Health Systems: A Case Study from Walewale"
-                  authors="CHWRI Research Team"
-                  type="Case Study"
-                  date="2024"
-                />
+                {PUBLICATIONS.filter((p) => p.featured)
+                  .slice(0, 3)
+                  .map((pub) => (
+                    <PublicationCard
+                      key={pub.id}
+                      title={pub.title}
+                      authors={pub.authors}
+                      journal={pub.journal}
+                      type={pub.type}
+                      date={pub.year}
+                      href={pub.href}
+                      doi={pub.doi}
+                      summary={pub.summary}
+                      contributors={pub.contributors}
+                    />
+                  ))}
               </StaggerChildren>
             </div>
 

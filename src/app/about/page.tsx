@@ -59,6 +59,7 @@ const TEAM_PLACEHOLDERS = [
     unit: "Centre for Health & Wellbeing Research and Interventions (CHWRI)",
     name: "Abubakari Jaliu",
     image: "/images/team/abubakari-jaliu.png",
+    imageClassName: "object-[center_18%]",
     bio: "Public health leader with over a decade of experience in implementation research, health systems strengthening, nutrition, MEL, and social and behaviour change communication. He leads CHWRI's evidence-driven strategy and currently pursues a PhD in Public Health with a focus on non-communicable diseases.",
   },
   {
@@ -74,6 +75,13 @@ const TEAM_PLACEHOLDERS = [
     name: "Dr. Raymond Akawire Aborigo",
     image: "/images/team/raymond-aborigo.png",
     bio: "Global public health researcher (PhD, Monash University) with over two decades of experience across health systems research, maternal and newborn health, non-communicable diseases, mental health, and bioethics. Author of 80+ peer-reviewed publications, he has consulted for WHO, UNICEF, USAID, and CDC, strengthening evidence-informed policy and research capacity.",
+  },
+  {
+    role: "Board Director",
+    unit: "Country Health and Innovation Team Lead, EISD",
+    name: "Dr. Mohammed Ali",
+    image: "/images/team/mohammed-ali.png",
+    bio: "Development management, research, and evaluation professional with 17 years of experience across Africa. Holding a PhD in Healthcare Management and an MPH, he specializes in RMNCAH, SRHR, monitoring and evaluation, and community health systems. He has led major USAID and CRS programmes and consulted for Africa CDC, UNDP, WaterAid, and other partners.",
   },
   {
     role: "Head, Internal Audit Department",
@@ -393,7 +401,7 @@ export default function AboutPage() {
             subtitle="Core staff profiles are being added progressively. Verified institutional biographies and photos are published as they are approved."
           />
 
-          <StaggerChildren className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StaggerChildren className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {TEAM_PLACEHOLDERS.map((member) => (
               <motion.div key={member.name} variants={fadeInUp}>
                 <div className="group relative rounded-2xl bg-white border border-slate-100 shadow-sm h-full overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-teal-200/80">
@@ -402,7 +410,9 @@ export default function AboutPage() {
                       src={member.image}
                       alt={member.name}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className={`object-cover transition-transform duration-500 group-hover:scale-105 ${
+                        "imageClassName" in member ? member.imageClassName : ""
+                      }`}
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 via-teal-950/20 to-transparent opacity-80 transition-opacity group-hover:opacity-100" />

@@ -34,6 +34,7 @@ import { PublicationCard } from "@/components/shared/publication-card";
 import { CTASection } from "@/components/shared/cta-section";
 import { PageHero } from "@/components/shared/page-hero";
 import { cn } from "@/lib/utils";
+import { PUBLICATIONS } from "@/lib/publications";
 
 const researchDomains = [
   {
@@ -123,36 +124,7 @@ const studies = [
   { title: "Rapid qualitative assessment of CHW medicine stock-outs and mitigation practices", status: "Completed" as const },
 ];
 
-const publications = [
-  {
-    title: "Community Health Workers in Northern Ghana: Supervision, Motivation, and Service Continuity",
-    authors: "CHWRI Research Collective",
-    type: "Research Paper" as const,
-    date: "2024",
-    href: "/publications",
-  },
-  {
-    title: "Equity in Rural Primary Care: Recommendations for District Health Management Teams",
-    authors: "Policy & Systems Unit",
-    type: "Policy Brief" as const,
-    date: "2024",
-    href: "/publications",
-  },
-  {
-    title: "Annual Learning Report — Participatory Research in the Upper East Corridor",
-    authors: "CHWRI",
-    type: "Report" as const,
-    date: "2023",
-    href: "/publications",
-  },
-  {
-    title: "From Field Notes to Action: Co-designing feedback with community advisory groups",
-    authors: "Ethics & Engagement Team",
-    type: "Case Study" as const,
-    date: "2023",
-    href: "/publications",
-  },
-];
+const researchPublications = PUBLICATIONS.filter((p) => p.featured).slice(0, 4);
 
 export default function ResearchPage() {
   return (
@@ -420,14 +392,19 @@ export default function ResearchPage() {
             subtitle="Selected outputs—papers, briefs, and learning products—from CHWRI and collaborating authors."
           />
           <StaggerChildren className="grid sm:grid-cols-2 gap-6 lg:gap-8">
-            {publications.map((pub) => (
+            {researchPublications.map((pub) => (
               <PublicationCard
-                key={pub.title}
+                key={pub.id}
                 title={pub.title}
                 authors={pub.authors}
+                journal={pub.journal}
                 type={pub.type}
-                date={pub.date}
+                date={pub.year}
                 href={pub.href}
+                doi={pub.doi}
+                summary={pub.summary}
+                contributors={pub.contributors}
+                featured={pub.featured}
               />
             ))}
           </StaggerChildren>

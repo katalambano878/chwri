@@ -181,6 +181,24 @@ export function Footer() {
         </div>
       </div>
 
+      {/* Partner resources */}
+      <div className="border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
+          <p className="text-xs text-teal-200/40 text-center sm:text-left">
+            Resources:{" "}
+            <a
+              href="https://www.investorlist.com"
+              target="_blank"
+              rel="noopener"
+              className="underline underline-offset-2 hover:text-teal-200/70 transition-colors"
+            >
+              Investorlist.com — downloadable, curated lists of active startup
+              investors, angels, VCs, and family offices
+            </a>
+          </p>
+        </div>
+      </div>
+
       {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">

@@ -1,80 +1,155 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowRight, FileText, Download, Calendar } from "lucide-react";
-import { motion } from "framer-motion";
-import { fadeInUp } from "@/lib/motion";
+import {
+  ArrowUpRight,
+  BookOpen,
+  Calendar,
+  ExternalLink,
+  FileText,
+} from "lucide-react";
+import { fadeInUp, motion } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import {
+  CONTRIBUTORS,
+  type ContributorId,
+  type PubType,
+} from "@/lib/publications";
 
 interface PublicationCardProps {
   title: string;
   authors?: string;
-  type: "Research Paper" | "Policy Brief" | "Report" | "Case Study";
+  journal?: string;
+  type: PubType;
   date?: string;
   href?: string;
+  doi?: string;
+  summary?: string;
+  contributors?: ContributorId[];
+  featured?: boolean;
   className?: string;
 }
 
 export function PublicationCard({
   title,
   authors,
+  journal,
   type,
   date,
   href = "#",
+  doi,
+  summary,
+  contributors = [],
+  featured = false,
   className,
 }: PublicationCardProps) {
-  const typeColors = {
-    "Research Paper": "bg-teal-100 text-teal-700",
-    "Policy Brief": "bg-sage-100 text-sage-700",
+  const typeColors: Record<PubType, string> = {
+    "Research Paper": "bg-teal-100 text-teal-800",
+    "Policy Brief": "bg-sage-100 text-sage-800",
     Report: "bg-slate-100 text-slate-700",
-    "Case Study": "bg-warm-100 text-warm-700",
+    "Case Study": "bg-amber-50 text-amber-800",
   };
 
+  const isExternal = href.startsWith("http");
+
   return (
-    <motion.div variants={fadeInUp}>
-      <Link
+    <motion.div variants={fadeInUp} className="h-full">
+      <a
         href={href}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
         className={cn(
-          "block group p-6 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-teal-200 transition-all duration-300 h-full",
+          "group flex h-full flex-col rounded-2xl border bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md",
+          featured
+            ? "border-teal-200/80 ring-1 ring-teal-100"
+            : "border-slate-100 hover:border-teal-200",
           className
         )}
       >
-        <div className="flex items-start gap-4">
-          <div className="w-11 h-11 rounded-xl bg-teal-50 flex items-center justify-center flex-shrink-0 group-hover:bg-teal-100 transition-colors">
-            <FileText className="w-5 h-5 text-teal-600" />
-          </div>
-          <div className="flex-1 min-w-0">
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <span
               className={cn(
-                "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mb-2",
+                "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
                 typeColors[type]
               )}
             >
               {type}
             </span>
-            <h3 className="font-heading text-base font-semibold text-slate-900 mb-1 group-hover:text-teal-700 transition-colors line-clamp-2">
-              {title}
-            </h3>
-            {authors && (
-              <p className="text-sm text-slate-500 mb-2 line-clamp-1">
-                {authors}
-              </p>
-            )}
-            <div className="flex items-center justify-between">
-              {date && (
-                <span className="flex items-center gap-1 text-xs text-slate-400">
-                  <Calendar className="w-3 h-3" />
-                  {date}
-                </span>
-              )}
-              <span className="flex items-center gap-1 text-xs font-medium text-teal-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                Read more
-                <ArrowRight className="w-3 h-3" />
+            {featured && (
+              <span className="inline-flex items-center rounded-full bg-teal-700 px-2.5 py-0.5 text-xs font-semibold text-white">
+                Featured
               </span>
-            </div>
+            )}
+          </div>
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-700 transition-colors group-hover:bg-teal-100">
+            <FileText className="h-5 w-5" />
           </div>
         </div>
-      </Link>
+
+        <h3 className="font-heading mb-2 text-base font-semibold leading-snug text-slate-900 transition-colors group-hover:text-teal-800 sm:text-lg">
+          {title}
+        </h3>
+
+        {authors && (
+          <p className="mb-3 text-sm leading-relaxed text-slate-500">
+            {authors}
+          </p>
+        )}
+
+        {summary && (
+          <p className="mb-4 line-clamp-3 flex-1 text-sm leading-relaxed text-slate-600">
+            {summary}
+          </p>
+        )}
+
+        <div className="mt-auto space-y-3 border-t border-slate-100 pt-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500">
+            {journal && (
+              <span className="inline-flex items-center gap-1.5 font-medium text-slate-600">
+                <BookOpen className="h-3.5 w-3.5 text-teal-600" />
+                {journal}
+              </span>
+            )}
+            {date && (
+              <span className="inline-flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5" />
+                {date}
+              </span>
+            )}
+          </div>
+
+          {contributors.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {contributors.map((id) => (
+                <span
+                  key={id}
+                  className="rounded-full border border-teal-100 bg-teal-50/70 px-2 py-0.5 text-[11px] font-medium text-teal-800"
+                >
+                  {CONTRIBUTORS[id].shortLabel}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-center justify-between gap-3">
+            {doi ? (
+              <span className="truncate text-[11px] text-slate-400">
+                DOI: {doi}
+              </span>
+            ) : (
+              <span />
+            )}
+            <span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-700">
+              {isExternal ? "View publication" : "Read more"}
+              {isExternal ? (
+                <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              ) : (
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              )}
+            </span>
+          </div>
+        </div>
+      </a>
     </motion.div>
   );
 }

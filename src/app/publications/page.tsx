@@ -13,6 +13,7 @@ import {
   ScrollText,
   Search,
   ShieldCheck,
+  Users,
 } from "lucide-react";
 import {
   AnimateOnScroll,
@@ -25,10 +26,15 @@ import { PublicationCard } from "@/components/shared/publication-card";
 import { CTASection } from "@/components/shared/cta-section";
 import { PageHero } from "@/components/shared/page-hero";
 import { cn } from "@/lib/utils";
-
-type PubType = "Research Paper" | "Policy Brief" | "Report" | "Case Study";
+import {
+  CONTRIBUTORS,
+  PUBLICATIONS,
+  type ContributorId,
+  type PubType,
+} from "@/lib/publications";
 
 type TabId = "all" | "research" | "policy" | "reports" | "case-studies";
+type ContributorFilter = "all" | ContributorId;
 
 const tabs: { id: TabId; label: string; match?: PubType }[] = [
   { id: "all", label: "All" },
@@ -38,93 +44,13 @@ const tabs: { id: TabId; label: string; match?: PubType }[] = [
   { id: "case-studies", label: "Case Studies", match: "Case Study" },
 ];
 
-const publications: {
-  title: string;
-  authors?: string;
-  type: PubType;
-  date?: string;
-  href?: string;
-}[] = [
-  {
-    title:
-      "Antenatal Care Uptake and Birth Preparedness Among Women in Rural North East Region: A Cross-Sectional Study",
-    authors: "Adongo, M. et al.",
-    type: "Research Paper",
-    date: "2024",
-    href: "/publications",
-  },
-  {
-    title:
-      "Community Health Volunteer Home Visits and Childhood Diarrhoea Management in Walewale Sub-District",
-    authors: "CHWRI Maternal & Child Health Unit",
-    type: "Research Paper",
-    date: "2024",
-    href: "/publications",
-  },
-  {
-    title:
-      "Who Reaches the Facility First? Geographic and Economic Barriers to Emergency Obstetric Care",
-    authors: "Health Equity Working Group",
-    type: "Research Paper",
-    date: "2023",
-    href: "/publications",
-  },
-  {
-    title:
-      "Strengthening District Health Information Systems: Options for North East Region",
-    authors: "Policy & Systems Unit",
-    type: "Policy Brief",
-    date: "2024",
-    href: "/publications",
-  },
-  {
-    title:
-      "Community Health Worker Recruitment, Retention, and Rural Posting Incentives — Evidence for Ghana’s CHW Policy",
-    authors: "CHWRI & Partners",
-    type: "Policy Brief",
-    date: "2023",
-    href: "/publications",
-  },
-  {
-    title:
-      "Integrated Community Case Management Pilot: Endline Evaluation Report (Walewale and Environs)",
-    authors: "Programme Evaluation Team",
-    type: "Report",
-    date: "2024",
-    href: "/publications",
-  },
-  {
-    title:
-      "Nutrition-Sensitive Agriculture and Household Food Security: Mid-Term Review of Partner Programme",
-    authors: "CHWRI",
-    type: "Report",
-    date: "2023",
-    href: "/publications",
-  },
-  {
-    title:
-      "Peer Support Groups for Postpartum Mothers: Outcomes and Lessons from a 12-Month Implementation",
-    authors: "Community Interventions Team",
-    type: "Case Study",
-    date: "2024",
-    href: "/publications",
-  },
-  {
-    title:
-      "Co-Designing Men’s Health Dialogues with Traditional Leaders: Process, Reach, and Early Signals",
-    authors: "Participatory Research Collective",
-    type: "Case Study",
-    date: "2023",
-    href: "/publications",
-  },
-  {
-    title:
-      "Water, Sanitation, and Acute Febrile Illness: Household Practices and Health Facility Referrals in the Upper East Corridor",
-    authors: "Environmental Health & CHWRI",
-    type: "Research Paper",
-    date: "2022",
-    href: "/publications",
-  },
+const contributorFilters: { id: ContributorFilter; label: string }[] = [
+  { id: "all", label: "All contributors" },
+  { id: "aziato", label: CONTRIBUTORS.aziato.label },
+  { id: "aborigo", label: CONTRIBUTORS.aborigo.label },
+  { id: "ali", label: CONTRIBUTORS.ali.label },
+  { id: "jaliu", label: CONTRIBUTORS.jaliu.label },
+  { id: "network", label: CONTRIBUTORS.network.label },
 ];
 
 type GovernanceDoc = {
@@ -196,147 +122,408 @@ const downloadResources = [
 export default function PublicationsPage() {
   const [query, setQuery] = useState("");
   const [activeTab, setActiveTab] = useState<TabId>("all");
+  const [contributor, setContributor] = useState<ContributorFilter>("all");
 
-  const filtered = useMemo(() => {
+  const matchesFilters = (
+    p: (typeof PUBLICATIONS)[number],
+    q: string,
+    matchType: PubType | undefined,
+    contributorFilter: ContributorFilter
+  ) => {
+    if (matchType && p.type !== matchType) return false;
+    if (
+      contributorFilter !== "all" &&
+      !p.contributors.includes(contributorFilter)
+    ) {
+      return false;
+    }
+    if (!q) return true;
+    const hay =
+      `${p.title} ${p.authors} ${p.journal} ${p.theme} ${p.summary} ${p.doi}`.toLowerCase();
+    return hay.includes(q);
+  };
+
+  const featured = useMemo(() => {
     const q = query.trim().toLowerCase();
     const matchType = tabs.find((t) => t.id === activeTab)?.match;
 
-    return publications.filter((p) => {
-      if (matchType && p.type !== matchType) return false;
-      if (!q) return true;
-      const hay = `${p.title} ${p.authors ?? ""}`.toLowerCase();
-      return hay.includes(q);
-    });
-  }, [activeTab, query]);
+    return PUBLICATIONS.filter(
+      (p) =>
+        p.featured && matchesFilters(p, q, matchType, contributor)
+    ).sort((a, b) => Number(b.year) - Number(a.year));
+  }, [activeTab, contributor, query]);
+
+  // Everything else — non-featured publications after the featured block
+  const subsequent = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const matchType = tabs.find((t) => t.id === activeTab)?.match;
+
+    return PUBLICATIONS.filter(
+      (p) =>
+        !p.featured && matchesFilters(p, q, matchType, contributor)
+    ).sort((a, b) => Number(b.year) - Number(a.year));
+  }, [activeTab, contributor, query]);
+
+  const filteredCount = featured.length + subsequent.length;
+
+  const counts = useMemo(() => {
+    return {
+      total: PUBLICATIONS.length,
+      aziato: PUBLICATIONS.filter((p) => p.contributors.includes("aziato"))
+        .length,
+      aborigo: PUBLICATIONS.filter((p) => p.contributors.includes("aborigo"))
+        .length,
+      ali: PUBLICATIONS.filter((p) => p.contributors.includes("ali")).length,
+    };
+  }, []);
 
   return (
     <main>
       <PageHero
         badge="Publications & Reports"
-        title="Knowledge That Informs Policy and Practice"
-        subtitle="Research papers, policy briefs, evaluations, and case studies from CHWRI — the Centre for Health & Wellbeing Research and Interventions in Walewale, Ghana."
+        title="Evidence From Research That Informs Policy and Practice"
+        subtitle="A curated library of peer-reviewed research, evaluations, and knowledge products linked to CHWRI leadership and partners — spanning maternal and newborn health, oncology nursing, community systems, mental health, and health systems strengthening in Ghana and across Africa."
         heroImage="/images/partners/partner-academic.jpg"
       />
 
-      <section className="bg-warm-50 py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      {/* Trust / attribution strip */}
+      <section className="border-b border-teal-100/70 bg-white py-10">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
+          {[
+            {
+              label: "Publications catalogued",
+              value: String(counts.total),
+              detail: "Peer-reviewed and linked research outputs",
+            },
+            {
+              label: "Prof. Lydia Aziato",
+              value: String(counts.aziato),
+              detail: "Oncology nursing, pain & maternal health",
+            },
+            {
+              label: "Dr. Raymond Aborigo",
+              value: String(counts.aborigo),
+              detail: "Maternal, newborn & respectful care",
+            },
+            {
+              label: "Dr. Mohammed Ali",
+              value: String(counts.ali),
+              detail: "Evaluation, RMNCAH & systems research",
+            },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="rounded-2xl border border-slate-100 bg-warm-50/60 p-5"
+            >
+              <p className="font-heading text-3xl font-semibold text-teal-800">
+                {item.value}
+              </p>
+              <p className="mt-1 text-sm font-semibold text-slate-800">
+                {item.label}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                {item.detail}
+              </p>
+            </div>
+          ))}
+        </div>
+        <div className="mx-auto mt-6 max-w-7xl px-4 sm:px-6">
+          <p className="flex items-start gap-2 text-sm leading-relaxed text-slate-600">
+            <Users className="mt-0.5 h-4 w-4 shrink-0 text-teal-700" />
+            <span>
+              Publications listed here are drawn from the approved scholarly
+              records of CHWRI Board Directors and affiliated research partners.
+              Each card links to the publisher DOI or open-access page.
+            </span>
+          </p>
+        </div>
+      </section>
+
+      {/* Filters + library: Featured first, then everything else */}
+      <section id="publications-library" className="bg-warm-50 py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <SectionHeader
+            badge="Library"
+            title="Publications catalogue"
+            subtitle="Featured research appears first. Search by title, author, journal, theme, or DOI — and filter by type or CHWRI board contributor."
+          />
+
           <AnimateOnScroll>
-            <div className="rounded-2xl bg-white border border-slate-100 shadow-sm p-6 sm:p-8">
-              <div className="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-8">
+            <div className="mb-12 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm sm:p-7">
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-center">
                 <div className="relative flex-1">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                  <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
                   <input
                     type="search"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search by title or author…"
-                    className="w-full rounded-2xl border border-slate-200 bg-warm-50/50 py-3.5 pl-12 pr-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-300 font-heading text-sm sm:text-base"
+                    placeholder="Search title, author, journal, theme, or DOI…"
+                    className="font-heading w-full rounded-2xl border border-slate-200 bg-warm-50/50 py-3.5 pl-12 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-teal-300 focus:outline-none focus:ring-2 focus:ring-teal-500/30 sm:text-base"
                     aria-label="Search publications"
                   />
                 </div>
-                <div className="flex items-center gap-2 text-slate-500 shrink-0">
-                  <Filter className="w-5 h-5 text-teal-600" aria-hidden />
-                  <span className="font-heading text-sm font-semibold text-slate-700 hidden sm:inline">
-                    Filter by type
+                <div className="flex items-center gap-2 text-slate-500">
+                  <Filter className="h-5 w-5 text-teal-600" aria-hidden />
+                  <span className="font-heading hidden text-sm font-semibold text-slate-700 sm:inline">
+                    Refine results
                   </span>
                 </div>
               </div>
-              <div
-                className="mt-6 flex flex-wrap gap-2"
-                role="tablist"
-                aria-label="Publication categories"
-              >
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={activeTab === tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={cn(
-                      "font-heading rounded-full px-4 py-2 text-sm font-semibold transition-all border",
-                      activeTab === tab.id
-                        ? "bg-teal-700 text-white border-teal-700 shadow-sm"
-                        : "bg-warm-50 text-slate-600 border-slate-200 hover:border-teal-200 hover:text-teal-800"
-                    )}
+
+              <div className="mt-5 space-y-4">
+                <div>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    Type
+                  </p>
+                  <div
+                    className="flex flex-wrap gap-2"
+                    role="tablist"
+                    aria-label="Publication categories"
                   >
-                    {tab.label}
-                  </button>
-                ))}
+                    {tabs.map((tab) => (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={activeTab === tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={cn(
+                          "font-heading rounded-full border px-4 py-2 text-sm font-semibold transition-all",
+                          activeTab === tab.id
+                            ? "border-teal-700 bg-teal-700 text-white shadow-sm"
+                            : "border-slate-200 bg-warm-50 text-slate-600 hover:border-teal-200 hover:text-teal-800"
+                        )}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    Contributor
+                  </p>
+                  <div
+                    className="flex flex-wrap gap-2"
+                    role="tablist"
+                    aria-label="Contributor filters"
+                  >
+                    {contributorFilters.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={contributor === item.id}
+                        onClick={() => setContributor(item.id)}
+                        className={cn(
+                          "font-heading rounded-full border px-4 py-2 text-sm font-semibold transition-all",
+                          contributor === item.id
+                            ? "border-teal-800 bg-teal-900 text-white shadow-sm"
+                            : "border-slate-200 bg-warm-50 text-slate-600 hover:border-teal-200 hover:text-teal-800"
+                        )}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </AnimateOnScroll>
-        </div>
-      </section>
 
-      <section className="bg-white py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            badge="Library"
-            title="Publications & outputs"
-            subtitle="Peer-reviewed work, concise briefs for decision-makers, evaluation reports, and implementation case studies — all grounded in northern Ghana."
-          />
-          {filtered.length === 0 ? (
+          <div className="mb-8 flex items-center justify-between gap-3">
+            <p className="text-sm text-slate-500">
+              Showing{" "}
+              <span className="font-semibold text-slate-800">
+                {filteredCount}
+              </span>{" "}
+              of {PUBLICATIONS.length} publications
+            </p>
+          </div>
+
+          {filteredCount === 0 ? (
             <AnimateOnScroll>
-              <p className="text-center text-slate-600 font-heading max-w-lg mx-auto">
-                No publications match your search. Try another keyword or clear the
-                filters.
-              </p>
+              <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-6 py-14 text-center">
+                <p className="font-heading mx-auto max-w-lg text-slate-600">
+                  No publications match your search. Try another keyword or clear
+                  the filters.
+                </p>
+              </div>
             </AnimateOnScroll>
           ) : (
-            <StaggerChildren className="grid sm:grid-cols-2 gap-6 lg:gap-8">
-              {filtered.map((pub) => (
-                <PublicationCard
-                  key={pub.title}
-                  title={pub.title}
-                  authors={pub.authors}
-                  type={pub.type}
-                  date={pub.date}
-                  href={pub.href}
-                />
-              ))}
-            </StaggerChildren>
+            <div className="space-y-14">
+              {featured.length > 0 && (
+                <div>
+                  <div className="mb-6 flex items-end justify-between gap-4">
+                    <div>
+                      <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-teal-700">
+                        Featured
+                      </p>
+                      <h3 className="font-heading text-2xl font-semibold text-slate-900">
+                        Highlighted research
+                      </h3>
+                    </div>
+                    <p className="text-sm text-slate-500">
+                      {featured.length} featured
+                    </p>
+                  </div>
+                  <StaggerChildren className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 lg:gap-8">
+                    {featured.map((pub) => (
+                      <PublicationCard
+                        key={pub.id}
+                        title={pub.title}
+                        authors={pub.authors}
+                        journal={pub.journal}
+                        type={pub.type}
+                        date={pub.year}
+                        href={pub.href}
+                        doi={pub.doi}
+                        summary={pub.summary}
+                        contributors={pub.contributors}
+                        featured
+                      />
+                    ))}
+                  </StaggerChildren>
+                </div>
+              )}
+
+              {subsequent.length > 0 && (
+                <div>
+                  <div className="mb-6 flex items-end justify-between gap-4 border-t border-slate-200/80 pt-10">
+                    <div>
+                      <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        All other publications
+                      </p>
+                      <h3 className="font-heading text-2xl font-semibold text-slate-900">
+                        Complete catalogue
+                      </h3>
+                    </div>
+                    <p className="text-sm text-slate-500">
+                      {subsequent.length} publications
+                    </p>
+                  </div>
+                  <StaggerChildren className="grid gap-6 sm:grid-cols-2 lg:gap-8">
+                    {subsequent.map((pub) => (
+                      <PublicationCard
+                        key={pub.id}
+                        title={pub.title}
+                        authors={pub.authors}
+                        journal={pub.journal}
+                        type={pub.type}
+                        date={pub.year}
+                        href={pub.href}
+                        doi={pub.doi}
+                        summary={pub.summary}
+                        contributors={pub.contributors}
+                      />
+                    ))}
+                  </StaggerChildren>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </section>
 
-      <section className="bg-teal-900/[0.03] py-20 lg:py-28 border-y border-teal-100/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      {/* Contributor spotlight */}
+      <section className="border-y border-teal-100/60 bg-teal-900/[0.03] py-16 lg:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <SectionHeader
+            badge="Board scholarship"
+            title="Research leadership connected to CHWRI"
+            subtitle="These profiles anchor the publications library in the Centre’s governance and scientific community."
+          />
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              {
+                name: CONTRIBUTORS.aziato.label,
+                focus:
+                  "Oncology nursing, women’s health, pain management, and nursing education leadership.",
+                count: counts.aziato,
+                filter: "aziato" as ContributorFilter,
+              },
+              {
+                name: CONTRIBUTORS.aborigo.label,
+                focus:
+                  "Maternal and newborn health, respectful maternity care, bioethics, and community health systems research.",
+                count: counts.aborigo,
+                filter: "aborigo" as ContributorFilter,
+              },
+              {
+                name: CONTRIBUTORS.ali.label,
+                focus:
+                  "Development management, RMNCAH evaluation, community systems, and mixed-methods implementation research.",
+                count: counts.ali,
+                filter: "ali" as ContributorFilter,
+              },
+            ].map((person) => (
+              <button
+                key={person.name}
+                type="button"
+                onClick={() => {
+                  setContributor(person.filter);
+                  setActiveTab("all");
+                  setQuery("");
+                  document
+                    .getElementById("publications-library")
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+                className="rounded-2xl border border-slate-100 bg-white p-6 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-teal-200 hover:shadow-md"
+              >
+                <p className="font-heading text-lg font-semibold text-slate-900">
+                  {person.name}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {person.focus}
+                </p>
+                <p className="mt-4 text-sm font-semibold text-teal-700">
+                  View {person.count} publications →
+                </p>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Governance docs */}
+      <section className="bg-white py-16 lg:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <SectionHeader
             badge="Governance"
             title="Governance & institutional documents"
             subtitle="Official documents that define how CHWRI is constituted, governed, and held accountable. Click to view or download."
           />
-          <StaggerChildren className="grid md:grid-cols-3 gap-6 lg:gap-8">
+          <StaggerChildren className="grid gap-6 md:grid-cols-3 lg:gap-8">
             {governanceDocuments.map((doc) => {
               const Icon = doc.icon;
 
               const cardInner = (
                 <>
-                  <div className="flex items-start justify-between mb-5">
-                    <div className="w-12 h-12 rounded-2xl bg-teal-50 flex items-center justify-center group-hover:bg-teal-100 transition-colors">
-                      <Icon className="w-6 h-6 text-teal-700" />
+                  <div className="mb-5 flex items-start justify-between">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 transition-colors group-hover:bg-teal-100">
+                      <Icon className="h-6 w-6 text-teal-700" />
                     </div>
                     {!doc.available && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200/70 px-3 py-1 text-xs font-semibold font-heading">
-                        <Lock className="w-3 h-3" aria-hidden />
+                      <span className="font-heading inline-flex items-center gap-1.5 rounded-full border border-amber-200/70 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+                        <Lock className="h-3 w-3" aria-hidden />
                         Coming soon
                       </span>
                     )}
                   </div>
-                  <h3 className="font-heading text-lg font-semibold text-slate-900 group-hover:text-teal-700 transition-colors mb-2">
+                  <h3 className="font-heading mb-2 text-lg font-semibold text-slate-900 transition-colors group-hover:text-teal-700">
                     {doc.title}
                   </h3>
-                  <p className="text-slate-600 text-sm leading-relaxed flex-1 mb-6">
+                  <p className="mb-6 flex-1 text-sm leading-relaxed text-slate-600">
                     {doc.description}
                   </p>
                   <span
                     className={cn(
-                      "inline-flex items-center gap-2 text-sm font-semibold font-heading",
+                      "font-heading inline-flex items-center gap-2 text-sm font-semibold",
                       doc.available ? "text-teal-700" : "text-slate-400"
                     )}
                   >
-                    <Download className="w-4 h-4" aria-hidden />
+                    <Download className="h-4 w-4" aria-hidden />
                     {doc.available ? doc.label : "Available shortly"}
                   </span>
                 </>
@@ -349,12 +536,12 @@ export default function PublicationsPage() {
                       href={doc.file}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex flex-col h-full group p-6 lg:p-8 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-teal-200 transition-all duration-300"
+                      className="group flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all duration-300 hover:border-teal-200 hover:shadow-md lg:p-8"
                     >
                       {cardInner}
                     </a>
                   ) : (
-                    <div className="flex flex-col h-full group p-6 lg:p-8 bg-white/70 rounded-2xl border border-dashed border-slate-200 shadow-sm cursor-default">
+                    <div className="group flex h-full cursor-default flex-col rounded-2xl border border-dashed border-slate-200 bg-white/70 p-6 shadow-sm lg:p-8">
                       {cardInner}
                     </div>
                   )}
@@ -365,33 +552,34 @@ export default function PublicationsPage() {
         </div>
       </section>
 
-      <section className="bg-warm-50 py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      {/* Downloads placeholders */}
+      <section className="bg-warm-50 py-16 lg:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <SectionHeader
             badge="Downloads"
             title="Reports, data briefs & toolkits"
-            subtitle="Placeholder resources you can swap for live PDFs and assets. Each card is styled for quick scanning and download cues."
+            subtitle="Institutional download resources. Live PDFs can replace these placeholders as documents are cleared for public release."
           />
-          <StaggerChildren className="grid md:grid-cols-3 gap-6 lg:gap-8">
+          <StaggerChildren className="grid gap-6 md:grid-cols-3 lg:gap-8">
             {downloadResources.map((item) => {
               const Icon = item.icon;
               return (
                 <motion.div key={item.title} variants={fadeInUp}>
                   <Link
                     href={item.href}
-                    className="flex flex-col h-full group p-6 lg:p-8 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-teal-200 transition-all duration-300"
+                    className="group flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all duration-300 hover:border-teal-200 hover:shadow-md lg:p-8"
                   >
-                    <div className="w-12 h-12 rounded-2xl bg-teal-50 flex items-center justify-center mb-5 group-hover:bg-teal-100 transition-colors">
-                      <Icon className="w-6 h-6 text-teal-600" />
+                    <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 transition-colors group-hover:bg-teal-100">
+                      <Icon className="h-6 w-6 text-teal-600" />
                     </div>
-                    <h3 className="font-heading text-lg font-semibold text-slate-900 group-hover:text-teal-700 transition-colors mb-2">
+                    <h3 className="font-heading mb-2 text-lg font-semibold text-slate-900 transition-colors group-hover:text-teal-700">
                       {item.title}
                     </h3>
-                    <p className="text-slate-600 text-sm leading-relaxed flex-1 mb-6">
+                    <p className="mb-6 flex-1 text-sm leading-relaxed text-slate-600">
                       {item.description}
                     </p>
-                    <span className="inline-flex items-center gap-2 text-sm font-semibold text-teal-700 font-heading">
-                      <Download className="w-4 h-4" aria-hidden />
+                    <span className="font-heading inline-flex items-center gap-2 text-sm font-semibold text-teal-700">
+                      <Download className="h-4 w-4" aria-hidden />
                       {item.label}
                     </span>
                   </Link>
