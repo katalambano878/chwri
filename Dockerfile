@@ -5,6 +5,8 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
+# Install all deps (including Tailwind/PostCSS) for the production build.
+ENV NODE_ENV=development
 RUN npm ci
 
 FROM base AS builder
