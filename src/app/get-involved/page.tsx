@@ -96,7 +96,7 @@ export default function GetInvolvedPage() {
               title="Volunteer & Collaborate"
               description="Share time and expertise through supervised placements, technical assistance, or community-facing activities."
               variant="filled"
-              image="/images/about-community.png"
+              image="/images/about-community.jpg"
             />
             <FeatureCard
               icon={Microscope}

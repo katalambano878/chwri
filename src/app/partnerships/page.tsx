@@ -60,14 +60,14 @@ const PARTNER_TYPES = [
     title: "NGOs",
     description:
       "Civil-society partners help bridge implementation, advocacy, and reach—especially where community trust and programme continuity are decisive.",
-    image: "/images/about-community.png",
+    image: "/images/about-community.jpg",
   },
   {
     icon: Globe2,
     title: "Development Agencies",
     description:
       "We align monitoring, evaluation, and learning with donor standards while keeping focus on ethical practice and measurable community benefit.",
-    image: "/images/hero.png",
+    image: "/images/hero.jpg",
   },
   {
     icon: Handshake,

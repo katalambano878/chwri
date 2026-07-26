@@ -71,7 +71,7 @@ const featuredProjects = [
     theme: "Preventive Health",
     date: "2022–2024",
     href: "/programs",
-    image: "/images/hero.png",
+    image: "/images/hero.jpg",
   },
   {
     title: "Community-Based Mental Health and Psychosocial Support Pilot",

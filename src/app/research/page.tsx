@@ -34,7 +34,7 @@ import { PublicationCard } from "@/components/shared/publication-card";
 import { CTASection } from "@/components/shared/cta-section";
 import { PageHero } from "@/components/shared/page-hero";
 import { cn } from "@/lib/utils";
-import { PUBLICATIONS } from "@/lib/publications";
+import { FEATURED_PUBLICATIONS } from "@/lib/publications";
 
 const researchDomains = [
   {
@@ -78,7 +78,7 @@ const researchDomains = [
 const RESEARCH_DOMAIN_IMAGES = [
   "/images/partners/partner-communities.jpg",
   "/images/projects/maternal-health.jpg",
-  "/images/hero.png",
+  "/images/hero.jpg",
   "/images/projects/adolescent.jpg",
   "/images/news/policy-dialogue.jpg",
   "/images/partners/partner-health-institutions.jpg",
@@ -124,7 +124,7 @@ const studies = [
   { title: "Rapid qualitative assessment of CHW medicine stock-outs and mitigation practices", status: "Completed" as const },
 ];
 
-const researchPublications = PUBLICATIONS.filter((p) => p.featured).slice(0, 4);
+const researchPublications = FEATURED_PUBLICATIONS.slice(0, 4);
 
 export default function ResearchPage() {
   return (

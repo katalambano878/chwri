@@ -58,7 +58,7 @@ const TEAM_PLACEHOLDERS = [
     role: "Chief Executive Officer (CEO)",
     unit: "Centre for Health & Wellbeing Research and Interventions (CHWRI)",
     name: "Abubakari Jaliu",
-    image: "/images/team/abubakari-jaliu.png",
+    image: "/images/team/abubakari-jaliu.jpg",
     imageClassName: "object-[center_18%]",
     bio: "Public health leader with over a decade of experience in implementation research, health systems strengthening, nutrition, MEL, and social and behaviour change communication. He leads CHWRI's evidence-driven strategy and currently pursues a PhD in Public Health with a focus on non-communicable diseases.",
   },
@@ -66,28 +66,28 @@ const TEAM_PLACEHOLDERS = [
     role: "Board Director",
     unit: "Vice Chancellor, University of Health and Allied Sciences (UHAS)",
     name: "Prof. Lydia Aziato",
-    image: "/images/team/lydia-aziato.png",
+    image: "/images/team/lydia-aziato.jpg",
     bio: "Distinguished nurse leader, oncology expert, and academic with a PhD in Nursing. Vice Chancellor of UHAS and author of over 90 peer-reviewed publications, she provides strategic leadership and academic guidance across CHWRI's research, capacity building, and cancer prevention initiatives.",
   },
   {
     role: "Board Director",
     unit: "Chief Health Research Officer, Navrongo Health Research Centre (Ghana Health Service)",
     name: "Dr. Raymond Akawire Aborigo",
-    image: "/images/team/raymond-aborigo.png",
+    image: "/images/team/raymond-aborigo.jpg",
     bio: "Global public health researcher (PhD, Monash University) with over two decades of experience across health systems research, maternal and newborn health, non-communicable diseases, mental health, and bioethics. Author of 80+ peer-reviewed publications, he has consulted for WHO, UNICEF, USAID, and CDC, strengthening evidence-informed policy and research capacity.",
   },
   {
     role: "Board Director",
     unit: "Country Health and Innovation Team Lead, EISD",
     name: "Dr. Mohammed Ali",
-    image: "/images/team/mohammed-ali.png",
+    image: "/images/team/mohammed-ali.jpg",
     bio: "Development management, research, and evaluation professional with 17 years of experience across Africa. Holding a PhD in Healthcare Management and an MPH, he specializes in RMNCAH, SRHR, monitoring and evaluation, and community health systems. He has led major USAID and CRS programmes and consulted for Africa CDC, UNDP, WaterAid, and other partners.",
   },
   {
     role: "Head, Internal Audit Department",
     unit: "Nursing and Midwifery Training College, Nalerigu (Ministry of Health, Ghana)",
     name: "Jamal Mohammed Abubakari",
-    image: "/images/team/jamal-mohammed-abubakari.png",
+    image: "/images/team/jamal-mohammed-abubakari.jpg",
     bio: "Public sector Internal Auditor and governance professional with extensive experience in risk management, internal controls, and regulatory compliance. Jamal holds an MBA in Auditing (UPSA), is a member of the Institute of Internal Auditors Ghana, and contributes to both institutional accountability and community leadership.",
   },
 ] as const;
@@ -99,7 +99,7 @@ export default function AboutPage() {
         badge="About CHWRI"
         title="Dedicated to Health, Driven by Evidence"
         subtitle="The Centre for Health and Wellbeing Research and Interventions (CHWRI) is an independent health research institution rooted in Walewale, Ghana. We generate knowledge, test what works, and partner with communities and systems to turn evidence into better care and healthier lives."
-        heroImage="/images/about-community.png"
+        heroImage="/images/about-community.jpg"
       />
 
       {/* Organisation overview */}

@@ -168,7 +168,7 @@ export default function OurWorkPage() {
         badge="Our Work"
         title="Comprehensive Health Solutions Through Research and Action"
         subtitle="From our base in Walewale to national partnerships, CHWRI unites rigorous science with community-grounded action—so evidence strengthens care, systems, and policy across Ghana."
-        heroImage="/images/hero.png"
+        heroImage="/images/hero.jpg"
       />
 
       <SectionShell className="bg-warm-50">

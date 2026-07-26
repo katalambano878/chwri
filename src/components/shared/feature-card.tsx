@@ -45,7 +45,13 @@ export function FeatureCard({
       {image && (
         <div className="relative -mt-7 -mx-7 mb-10">
           <div className="relative h-48 rounded-t-2xl overflow-hidden">
-            <Image src={image} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+            <Image
+              src={image}
+              alt={title}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
           </div>
           <div className="absolute -bottom-5 left-7 w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-md border border-slate-100 group-hover:scale-110 transition-transform duration-300">

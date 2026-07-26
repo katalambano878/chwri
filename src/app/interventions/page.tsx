@@ -219,7 +219,7 @@ export default function InterventionsPage() {
               title="Child Health & Nutrition"
               description="Growth monitoring, feeding counselling, illness recognition, and referrals integrated with community and clinic touchpoints."
               href="/programs"
-              image="/images/hero.png"
+              image="/images/hero.jpg"
             />
             <FeatureCard
               icon={ShieldCheck}

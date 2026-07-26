@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 const SITE_NAME = "CHWRI";
-const DEFAULT_OG_IMAGE = "/images/chwri-logo.png";
+const DEFAULT_OG_IMAGE = "/images/chwri-logo-og.webp";
 
 export function buildPageMetadata(
   title: string,
@@ -24,8 +24,8 @@ export function buildPageMetadata(
       images: [
         {
           url: DEFAULT_OG_IMAGE,
-          width: 1024,
-          height: 558,
+          width: 1200,
+          height: 800,
           alt: "CHWRI logo",
         },
       ],

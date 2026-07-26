@@ -583,3 +583,6 @@ export const PUBLICATIONS: Publication[] = [
 export const PUBLICATION_THEMES = Array.from(
   new Set(PUBLICATIONS.map((p) => p.theme))
 ).sort();
+
+/** Pre-filtered featured set for lightweight homepage / research previews. */
+export const FEATURED_PUBLICATIONS = PUBLICATIONS.filter((p) => p.featured);

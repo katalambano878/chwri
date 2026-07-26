@@ -7,13 +7,16 @@ import { Footer } from "@/components/layout/footer";
 const sourceSans = Source_Sans_3({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 const sourceSerif = Source_Serif_4({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600", "700"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -50,9 +53,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/chwri-logo.png",
-        width: 1024,
-        height: 558,
+        url: "/images/chwri-logo-og.webp",
+        width: 1200,
+        height: 800,
         alt: "CHWRI logo",
       },
     ],
@@ -62,7 +65,7 @@ export const metadata: Metadata = {
     title: "CHWRI | Centre for Health & Wellbeing Research and Interventions",
     description:
       "Advancing health outcomes and quality of life through innovative research and evidence-based interventions in Ghana and beyond.",
-    images: ["/images/chwri-logo.png"],
+    images: ["/images/chwri-logo-og.webp"],
   },
   icons: {
     icon: [
@@ -91,7 +94,7 @@ const organizationSchema = {
   "@type": "Organization",
   name: "Centre for Health & Wellbeing Research and Interventions (CHWRI)",
   url: "https://www.chwri.org",
-  logo: "https://www.chwri.org/images/chwri-logo.png",
+  logo: "https://www.chwri.org/images/chwri-logo-og.webp",
   sameAs: [],
   contactPoint: [
     {

@@ -87,7 +87,7 @@ export function Navbar() {
             <Link href="/" className="flex items-center group" aria-label="CHWRI Home">
               <div className="relative w-[176px] h-12 sm:w-[220px] sm:h-14 lg:w-[270px] lg:h-16">
                 <Image
-                  src="/images/chwri-logo.png"
+                  src="/images/chwri-logo-nav.webp"
                   alt="CHWRI logo"
                   fill
                   className="object-contain object-left"

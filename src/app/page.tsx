@@ -46,7 +46,7 @@ import { ArticleCard } from "@/components/shared/article-card";
 import { TestimonialCard } from "@/components/shared/testimonial-card";
 import { CTASection } from "@/components/shared/cta-section";
 import { THEMATIC_AREAS, IMPACT_STATS } from "@/lib/constants";
-import { PUBLICATIONS } from "@/lib/publications";
+import { FEATURED_PUBLICATIONS } from "@/lib/publications";
 
 const thematicIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   Heart,
@@ -58,7 +58,7 @@ const thematicIcons: Record<string, React.ComponentType<{ className?: string }>>
 };
 
 const HERO_IMAGES = [
-  "/images/hero.png",
+  "/images/hero.jpg",
   "/images/projects/maternal-health.jpg",
   "/images/partners/partner-health-institutions.jpg"
 ];
@@ -96,7 +96,7 @@ export default function HomePage() {
               initial={{ opacity: 0, scale: 1.05 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 1.5, ease: "easeInOut" }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
               className="absolute inset-0"
             >
               <Image
@@ -285,7 +285,7 @@ export default function HomePage() {
               <div className="relative">
                 <div className="relative aspect-[4/3] rounded-3xl border border-teal-100/50 overflow-hidden flex items-center justify-center">
                   <Image
-                    src="/images/about-community.png"
+                    src="/images/about-community.jpg"
                     alt="Community members painting a mural, maintaining village infrastructure, and tending a vegetable garden — community-led development in the North-East Region."
                     fill
                     className="object-cover object-center"
@@ -751,7 +751,7 @@ export default function HomePage() {
                 </Link>
               </div>
               <StaggerChildren className="space-y-4">
-                {PUBLICATIONS.filter((p) => p.featured)
+                {FEATURED_PUBLICATIONS
                   .slice(0, 3)
                   .map((pub) => (
                     <PublicationCard

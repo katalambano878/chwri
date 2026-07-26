@@ -58,11 +58,12 @@ export function Footer() {
           <div className="lg:col-span-4">
             <div className="relative w-[220px] h-[70px] mb-5">
               <Image
-                src="/images/chwri-logo.png"
+                src="/images/chwri-logo-nav.webp"
                 alt="CHWRI logo"
                 fill
                 className="object-contain object-left"
                 sizes="220px"
+                loading="lazy"
               />
             </div>
             <p className="text-teal-200/60 text-sm leading-relaxed mb-6 max-w-sm">
