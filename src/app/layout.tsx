@@ -65,9 +65,13 @@ export const metadata: Metadata = {
     images: ["/images/chwri-logo.png"],
   },
   icons: {
-    icon: "/images/chwri-logo.png",
-    shortcut: "/images/chwri-logo.png",
-    apple: "/images/chwri-logo.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/images/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/images/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
   robots: {
     index: true,
