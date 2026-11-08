@@ -219,7 +219,7 @@ export function Footer() {
             ))}
           </div>
           <p className="text-xs text-teal-200/30">
-            Powered By Doctor Barns Tech "Built withfor community health"
+            Powered By <a href="https://doctorbarns.com" target="_blank" rel="noopener" className="text-teal-200/30 hover:underline">Doctor Barns Tech</a> "Built withfor community health"
           </p>
         </div>
       </div>
